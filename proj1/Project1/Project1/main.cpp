@@ -14,6 +14,22 @@ GLuint VBO;
 const char* pVSFileName = "shader.vs";
 const char* pFSFileName = "shader.fs";
 
+const float oBSx = 0;
+const float oBSy = 0;
+const float oBSz = 0;
+const float vRPx = 0;
+const float vRPy = 0;
+const float vRPz = 30;
+const float uPx = 0;
+const float uPy = 1;
+const float uPz = 0;
+const float fovy = 90;
+const float aspect = 1.;
+const float zNear = 0.1;
+const float zFar = 50;
+const float widthPixels = 1024;
+const float heightPixels = 1024;
+
 static void RenderSceneCB()
 {
 	glClear(GL_COLOR_BUFFER_BIT);
@@ -22,7 +38,7 @@ static void RenderSceneCB()
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
 
-	glDrawArrays(GL_TRIANGLES, 0, 3);
+	glDrawArrays(GL_TRIANGLES, 0, 6);
 
 	glDisableVertexAttribArray(0);
 
@@ -37,10 +53,15 @@ static void InitializeGlutCallbacks()
 
 static void CreateVertexBuffer()
 {
-	Vector3f Vertices[3];
-	Vertices[0] = Vector3f(-1.0f, -1.0f, 0.0f);
-	Vertices[1] = Vector3f(1.0f, -1.0f, 0.0f);
-	Vertices[2] = Vector3f(0.0f, 1.0f, 0.0f);
+	Vector3f Vertices[6];
+	Vertices[0] = Vector3f(1.0f, 1.0f, 0.0f);
+	Vertices[1] = Vector3f(-1.0f, -1.0f, 0.0f); 
+	Vertices[2] = Vector3f(-1.0f, 1.0f, 0.0f);
+	
+	Vertices[3] = Vector3f(1.0f, 1.0f, 0.0f);
+	Vertices[4] = Vector3f(1.0f, -1.0f, 0.0f);
+	Vertices[5] = Vector3f(-1.0f, -1.0f, 0.0f);
+
 
 	glGenBuffers(1, &VBO);
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
@@ -72,6 +93,30 @@ static void AddShader(GLuint ShaderProgram, const char* pShaderText, GLenum Shad
 	}
 
 	glAttachShader(ShaderProgram, ShaderObj);
+}
+
+void static cameraDeclaration() {
+	gluLookAt(oBSx, oBSy, oBSz, vRPx, vRPy, vRPz, uPx, uPy, uPz);
+
+	gluPerspective(fovy, aspect, zNear, zFar);
+}
+
+void static uniformDeclaration(GLuint ShaderProgram) {
+	glUniform1f(glGetUniformLocation(ShaderProgram, "obsx"), oBSx);
+	glUniform1f(glGetUniformLocation(ShaderProgram, "obsy"), oBSy);
+	glUniform1f(glGetUniformLocation(ShaderProgram, "obsz"), oBSz);
+	glUniform1f(glGetUniformLocation(ShaderProgram, "vrpx"), vRPx);
+	glUniform1f(glGetUniformLocation(ShaderProgram, "vrpy"), vRPy);
+	glUniform1f(glGetUniformLocation(ShaderProgram, "vrpz"), vRPz);
+	glUniform1f(glGetUniformLocation(ShaderProgram, "upx"), uPx);
+	glUniform1f(glGetUniformLocation(ShaderProgram, "upy"), uPy);
+	glUniform1f(glGetUniformLocation(ShaderProgram, "upz"), uPz);
+	glUniform1f(glGetUniformLocation(ShaderProgram, "fovy"), fovy);
+	glUniform1f(glGetUniformLocation(ShaderProgram, "aspect"), aspect);
+	glUniform1f(glGetUniformLocation(ShaderProgram, "znear"), zNear);
+	glUniform1f(glGetUniformLocation(ShaderProgram, "zfar"), zFar);
+	glUniform1f(glGetUniformLocation(ShaderProgram, "widthpixels"), widthPixels);
+	glUniform1f(glGetUniformLocation(ShaderProgram, "heightpixels"), heightPixels);
 }
 
 static void CompileShaders()
@@ -116,15 +161,18 @@ static void CompileShaders()
 	}
 
 	glUseProgram(ShaderProgram);
+	uniformDeclaration(ShaderProgram);
 }
 
 int main(int argc, char** argv)
 {
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);
-	glutInitWindowSize(1024, 768);
-	glutInitWindowPosition(100, 100);
-	glutCreateWindow("Tutorial 04");
+	glutInitWindowSize(widthPixels, heightPixels);
+	glutInitWindowPosition(500, 0);
+	glutCreateWindow("Visualizer");
+
+	cameraDeclaration();
 
 	InitializeGlutCallbacks();
 
