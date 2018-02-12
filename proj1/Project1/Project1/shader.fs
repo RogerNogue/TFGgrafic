@@ -62,13 +62,38 @@ float length(vec3 p){
 
 float sdSphere(vec3 p, float s )
 {
-	vec3 centre = vec3(0,0,2);
+	vec3 centre = vec3(0,0,3);
 	return length(p-centre)-s;
+}
+float udBox( vec3 p )
+{
+  vec3 mesures = vec3(1,1,1);
+  vec3 centre = vec3(0,0,3);
+  return length(max(abs(p - centre)-mesures,0.0));
+}
+
+//The d1 and d2 parameters in the following functions are the distance to the two distance fields to combine together.
+float opUnion( float d1, float d2 )
+{
+    return min(d1,d2);
+}
+
+float opSubstraction( float d1, float d2 )
+{
+    return max(d1,-d2);
+}
+
+float opIntersection( float d1, float d2 )
+{
+    return max(d1,d2);
 }
 
 float objectesEscena(vec3 punt){
-	//creo una esfera en el (0,0,2)
-	return sdSphere(punt, 1);
+	//return sdSphere(punt, 2);
+	//return udBox(punt);
+	return opUnion(sdSphere(punt, 1.5), udBox(punt)); //sembla que fa coses rares
+	//return opSubstraction(udBox(punt), sdSphere(punt, 1.5));
+	//return opIntersection(sdSphere(punt, 1.5), udBox(punt));
 }
 
 float rayMarching(vec3 dir){
