@@ -20,7 +20,7 @@ uniform float heightpixels;
 const int MAX_MARCHING_STEPS = 20;
 const float MIN_DIST = 0.0;
 const float MAX_DIST = 15.0;
-const float EPSILON = 0.00001;
+const float EPSILON = 0.001;
 const vec3 PAS = vec3(0,0,0.5);
 
 out vec4 FragColor;
@@ -67,9 +67,11 @@ float sdSphere(vec3 p, float s )
 }
 float udBox( vec3 p )
 {
-  vec3 mesures = vec3(1,1,1);
+  vec3 mesures = vec3(1,1,1);//meitat de les mesures
   vec3 centre = vec3(0,0,3);
-  return length(max(abs(p - centre)-mesures,0.0));
+  //return length(max(abs(p - centre)-mesures,0.0));
+  vec3 d = abs(p - centre) - mesures;
+  return min(max(d.x,max(d.y,d.z)),0.0) + length(max(d,0.0));
 }
 
 //The d1 and d2 parameters in the following functions are the distance to the two distance fields to combine together.
@@ -89,9 +91,9 @@ float opIntersection( float d1, float d2 )
 }
 
 float objectesEscena(vec3 punt){
-	//return sdSphere(punt, 2);
-	//return udBox(punt);
-	return opUnion(sdSphere(punt, 1.5), udBox(punt)); //sembla que fa coses rares
+	//return sdSphere(punt, 1.5);
+	return udBox(punt);
+	//return opUnion(sdSphere(punt, 1.5), udBox(punt)); //sembla que fa coses rares
 	//return opSubstraction(udBox(punt), sdSphere(punt, 1.5));
 	//return opIntersection(sdSphere(punt, 1.5), udBox(punt));
 }
@@ -110,6 +112,14 @@ float rayMarching(vec3 dir){
 		}
 	}
 	return MAX_DIST;
+}
+
+vec3 estimacioNormal(vec3 p){
+	return normalize(vec3(	
+					objectesEscena(vec3(p.x + EPSILON, p.y, p.z)) - objectesEscena(vec3(p.x - EPSILON, p.y, p.z)),
+					objectesEscena(vec3(p.x, p.y + EPSILON, p.z)) - objectesEscena(vec3(p.x, p.y - EPSILON, p.z)),
+					objectesEscena(vec3(p.x, p.y, p.z + EPSILON)) - objectesEscena(vec3(p.x, p.y, p.z - EPSILON))
+					));
 }
 
 void main()
