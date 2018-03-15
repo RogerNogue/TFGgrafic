@@ -13,20 +13,20 @@ GLuint VBO;
 
 const char* pVSFileName = "shader.vs";
 const char* pFSFileName = "shader.fs";
-
+//tenir en compte el vector up si vull modificar obs i vrp.
 const float oBSx = 0;
 const float oBSy = 0;
-const float oBSz = 0;
+const float oBSz = -10;
 const float vRPx = 0;
 const float vRPy = 0;
-const float vRPz = 30;
+const float vRPz = 10;
 const float uPx = 0;
 const float uPy = 1;
 const float uPz = 0;
 const float fovy = 90;
 const float aspect = 1.;
 const float zNear = 0.1;
-const float zFar = 50;
+const float zFar = 75;
 const float widthPixels = 1024;
 const float heightPixels = 1024;
 
