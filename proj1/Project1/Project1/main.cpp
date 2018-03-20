@@ -16,10 +16,10 @@ const char* pFSFileName = "shader.fs";
 //tenir en compte el vector up si vull modificar obs i vrp.
 const float oBSx = 0;
 const float oBSy = 0;
-const float oBSz = -10;
+const float oBSz = 2;
 const float vRPx = 0;
 const float vRPy = 0;
-const float vRPz = 10;
+const float vRPz = 0;
 const float uPx = 0;
 const float uPy = 1;
 const float uPz = 0;
@@ -45,10 +45,18 @@ static void RenderSceneCB()
 	glutSwapBuffers();
 }
 
+void processKeys(unsigned char key, int x, int y) {
+	switch (key){
+	case 27: //glutDestroyWindow(ShaderProgram);
+		exit(0);
+		break;
+	}
+}
 
 static void InitializeGlutCallbacks()
 {
 	glutDisplayFunc(RenderSceneCB);
+	glutKeyboardFunc(processKeys );
 }
 
 static void CreateVertexBuffer()
@@ -102,15 +110,11 @@ void static cameraDeclaration() {
 }
 
 void static uniformDeclaration(GLuint ShaderProgram) {
-	glUniform1f(glGetUniformLocation(ShaderProgram, "obsx"), oBSx);
-	glUniform1f(glGetUniformLocation(ShaderProgram, "obsy"), oBSy);
-	glUniform1f(glGetUniformLocation(ShaderProgram, "obsz"), oBSz);
-	glUniform1f(glGetUniformLocation(ShaderProgram, "vrpx"), vRPx);
-	glUniform1f(glGetUniformLocation(ShaderProgram, "vrpy"), vRPy);
-	glUniform1f(glGetUniformLocation(ShaderProgram, "vrpz"), vRPz);
-	glUniform1f(glGetUniformLocation(ShaderProgram, "upx"), uPx);
-	glUniform1f(glGetUniformLocation(ShaderProgram, "upy"), uPy);
-	glUniform1f(glGetUniformLocation(ShaderProgram, "upz"), uPz);
+
+	glUniform3f(glGetUniformLocation(ShaderProgram, "vObs"), oBSx, oBSy, oBSz);
+	glUniform3f(glGetUniformLocation(ShaderProgram, "vVrp"), vRPx, vRPy, vRPz);
+	glUniform3f(glGetUniformLocation(ShaderProgram, "vUp"), uPx, uPy, uPz);
+	
 	glUniform1f(glGetUniformLocation(ShaderProgram, "fovy"), fovy);
 	glUniform1f(glGetUniformLocation(ShaderProgram, "aspect"), aspect);
 	glUniform1f(glGetUniformLocation(ShaderProgram, "znear"), zNear);

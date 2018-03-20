@@ -1,4 +1,4 @@
 ﻿  main.cpp
 c:\users\roger\desktop\roger\fib\tfg\repo\tfggrafic\proj1\project1\project1\main.cpp(28): warning C4305: 'inicializando': truncamiento de 'double' a 'float'
-c:\users\roger\desktop\roger\fib\tfg\repo\tfggrafic\proj1\project1\project1\main.cpp(171): warning C4244: 'argumento': conversión de 'const float' a 'int'; posible pérdida de datos
+c:\users\roger\desktop\roger\fib\tfg\repo\tfggrafic\proj1\project1\project1\main.cpp(175): warning C4244: 'argumento': conversión de 'const float' a 'int'; posible pérdida de datos
   Project1.vcxproj -> C:\Users\Roger\Desktop\Roger\fib\TFG\repo\TFGgrafic\proj1\Project1\Debug\Project1.exe
