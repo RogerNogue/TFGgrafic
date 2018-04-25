@@ -14,21 +14,21 @@ GLuint VBO;
 const char* pVSFileName = "shader.vs";
 const char* pFSFileName = "shader.fs";
 //tenir en compte el vector up si vull modificar obs i vrp.
-const float oBSx = 0;
-const float oBSy = 2;
-const float oBSz = 2;
+const float oBSx = 20;
+const float oBSy = 15;
+const float oBSz = 25;
 const float vRPx = 0;
 const float vRPy = 0;
 const float vRPz = 0;
 const float uPx = 0;
 const float uPy = 1;
 const float uPz = 0;
-const float fovy = 90;
+const float fovy = 45;
 const float aspect = 1.;
 const float zNear = 0.1;
-const float zFar = 75;
-const float widthPixels = 1024;
-const float heightPixels = 1024;
+const float zFar = 100;
+float widthPixels = 1024;
+float heightPixels = 1024;
 
 static void RenderSceneCB()
 {
@@ -43,20 +43,6 @@ static void RenderSceneCB()
 	glDisableVertexAttribArray(0);
 
 	glutSwapBuffers();
-}
-
-void processKeys(unsigned char key, int x, int y) {
-	switch (key){
-	case 27: //glutDestroyWindow(ShaderProgram);
-		exit(0);
-		break;
-	}
-}
-
-static void InitializeGlutCallbacks()
-{
-	glutDisplayFunc(RenderSceneCB);
-	glutKeyboardFunc(processKeys );
 }
 
 static void CreateVertexBuffer()
@@ -166,6 +152,31 @@ static void CompileShaders()
 
 	glUseProgram(ShaderProgram);
 	uniformDeclaration(ShaderProgram);
+}
+
+void processKeys(unsigned char key, int x, int y) {
+	switch (key) {
+	case 27: //glutDestroyWindow(ShaderProgram);
+		exit(0);
+		break;
+	case 'r':
+		CompileShaders();
+		break;
+	}
+}
+
+void updateWindowValues(int width, int height) {
+	widthPixels = float(width);
+	heightPixels = float(height);
+	glViewport(0, 0, width, height);
+	CompileShaders();
+}
+
+static void InitializeGlutCallbacks()
+{
+	glutDisplayFunc(RenderSceneCB);
+	glutKeyboardFunc(processKeys);
+	glutReshapeFunc(updateWindowValues);
 }
 
 int main(int argc, char** argv)
