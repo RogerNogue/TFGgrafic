@@ -30,7 +30,7 @@ mat4 identityTransf =	mat4(vec4(1, 0, 0, 0),vec4(0, 1, 0, 0),vec4(0, 0, 1, 0),ve
 vec4 llumsPuntuals[3] = vec4[3](
 	vec4(-10, 2, 5, 0.5),
 	vec4(0, 1, 8, 0.6),
-	vec4(10,5,5, 0.9)
+	vec4(10,15,5, 0.9)
 	);
 
 	//vec4(10,20,5, 0.9)
@@ -40,6 +40,8 @@ int lightsReached[3] = int[3](
 	);
 
 float specularIntensity = 0;
+
+float dmin = MAX_DIST;
 
 out vec4 FragColor;
 /*
@@ -280,7 +282,8 @@ vec3 estimacioNormal(vec3 p){
 void lightMarching(vec3 obs, float profunditat, vec3 dir){
 	//straight to the light source
 	vec3 puntcolisio = vObs + profunditat * dir;
-	puntcolisio = puntcolisio + 2*EPSILON*estimacioNormal(puntcolisio);
+	puntcolisio = puntcolisio + 5*EPSILON*estimacioNormal(puntcolisio);
+	//puntcolisio = puntcolisio + 0.5*estimacioNormal(puntcolisio);
 	for(int j = 0; j < llumsPuntuals.length(); ++j){
 		float profCercaLlum =2*EPSILON; //quan el valor es baix, sembla que xoca amb el mateix objecte
 		vec3 direccioLlum = normalize(llumsPuntuals[j].xyz - puntcolisio);
@@ -288,6 +291,11 @@ void lightMarching(vec3 obs, float profunditat, vec3 dir){
 			vec3 puntActual = puntcolisio + profCercaLlum * direccioLlum;
 			float distColisio = objectesEscena(puntActual).x;
 			float distLlum = length(llumsPuntuals[j].xyz - (puntActual));
+
+
+			//if(profCercaLlum > 0.05 && distColisio < dmin)	dmin = distColisio;
+			//if(profCercaLlum > 0.01 && distColisio < dmin)	dmin = distColisio;
+			if(profCercaLlum > 0.009 && distColisio < dmin)	dmin = distColisio;
 
 			if(distColisio < EPSILON){
 				continue;
@@ -362,14 +370,15 @@ void main()
 			if(specularIntensity * llumsPuntuals[i].w > 0.899){
 				vec4 infoSpecular = specularColor(int(material));
 				color = infoSpecular.xyz * pow(specularIntensity, infoSpecular.w);
-				//color = vec3(1,0,0);
+				//color = vec3(1,1,1);
 			}else if(lightsReached[i] == 1 && llumsPuntuals[i].w > maxValueLight){
 				maxValueLight = llumsPuntuals[i].w;
 				color = diffuseColor(int(material)) * (lightsReached[i]*llumsPuntuals[i].w ) * max(dot(normal, normalize(llumsPuntuals[i].xyz - puntcolisio)), 0.0); //llum a la posicio de llumPuntual
 				color += colAmbient;
 				lighted = 1;
 			}else{
-				color = colAmbient;
+				//color = colAmbient;
+				color = colAmbient * min(dmin, 2);
 			}
 		}
 		FragColor = vec4(color, 1.0);
