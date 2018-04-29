@@ -49,9 +49,9 @@ static void CreateVertexBuffer()
 {
 	Vector3f Vertices[6];
 	Vertices[0] = Vector3f(1.0f, 1.0f, 0.0f);
-	Vertices[1] = Vector3f(-1.0f, -1.0f, 0.0f); 
+	Vertices[1] = Vector3f(-1.0f, -1.0f, 0.0f);
 	Vertices[2] = Vector3f(-1.0f, 1.0f, 0.0f);
-	
+
 	Vertices[3] = Vector3f(1.0f, 1.0f, 0.0f);
 	Vertices[4] = Vector3f(1.0f, -1.0f, 0.0f);
 	Vertices[5] = Vector3f(-1.0f, -1.0f, 0.0f);
@@ -100,7 +100,7 @@ void static uniformDeclaration(GLuint ShaderProgram) {
 	glUniform3f(glGetUniformLocation(ShaderProgram, "vObs"), oBSx, oBSy, oBSz);
 	glUniform3f(glGetUniformLocation(ShaderProgram, "vVrp"), vRPx, vRPy, vRPz);
 	glUniform3f(glGetUniformLocation(ShaderProgram, "vUp"), uPx, uPy, uPz);
-	
+
 	glUniform1f(glGetUniformLocation(ShaderProgram, "fovy"), fovy);
 	glUniform1f(glGetUniformLocation(ShaderProgram, "aspect"), aspect);
 	glUniform1f(glGetUniformLocation(ShaderProgram, "znear"), zNear);
@@ -161,6 +161,7 @@ void processKeys(unsigned char key, int x, int y) {
 		break;
 	case 'r':
 		CompileShaders();
+		glutPostRedisplay();
 		break;
 	}
 }
