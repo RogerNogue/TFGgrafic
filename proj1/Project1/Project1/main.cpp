@@ -29,6 +29,7 @@ const float zNear = 0.1;
 const float zFar = 100;
 float widthPixels = 1024;
 float heightPixels = 1024;
+float time = 0.;
 
 static void RenderSceneCB()
 {
@@ -107,6 +108,7 @@ void static uniformDeclaration(GLuint ShaderProgram) {
 	glUniform1f(glGetUniformLocation(ShaderProgram, "zfar"), zFar);
 	glUniform1f(glGetUniformLocation(ShaderProgram, "widthpixels"), widthPixels);
 	glUniform1f(glGetUniformLocation(ShaderProgram, "heightpixels"), heightPixels);
+	glUniform1f(glGetUniformLocation(ShaderProgram, "time"), time);
 }
 
 static void CompileShaders()
@@ -178,6 +180,8 @@ static void InitializeGlutCallbacks()
 	glutDisplayFunc(RenderSceneCB);
 	glutKeyboardFunc(processKeys);
 	glutReshapeFunc(updateWindowValues);
+	//temps
+	time +=0.01;
 }
 
 int main(int argc, char** argv)
